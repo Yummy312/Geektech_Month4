@@ -1,0 +1,4 @@
+.venv
+.idea
+main/settings.py
+db.sqlite3
