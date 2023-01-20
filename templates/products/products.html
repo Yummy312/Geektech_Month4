@@ -1,0 +1,26 @@
+{% extends 'layouts/index.html' %}
+{% block content %}
+{% for product in products %}
+    <style type="text/css">
+       .card{
+    display: flex;
+    position: relative;
+    transition: box-shadow .2s;
+    border-radius: 8px;
+    padding: 20px 10px 23px;
+    min-width: 120px;
+    flex-direction: column;
+    background-color: #fff;
+    box-sizing: border-box;
+    }
+    </style>
+    <div class="card" style="width: 18rem;">
+
+      <img src="{{ product.image.url }}" class="card-img-top" alt="..." width="300" height="200">
+      <div class="card-body">
+          <p class="card-text">Название: {{product.title}}</p>
+          <a href="/products/{{ product.id }}">Подробнее</a>
+      </div>
+    </div>}
+{% endfor %}
+{% endblock %}
