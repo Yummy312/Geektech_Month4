@@ -1,0 +1,22 @@
+
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'category.css' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+{% endblock %}
+
+<aside>
+      {% block category %}
+      <div class="list_category">
+        {% for category in categories %}
+        <ul>
+            <li><a href="/categories/{{category.id}}">{{category.categories}} <i class="fa fa-rouble fa-lg"> {{ category.icon }}</i></a>
+            </li>
+
+        </ul>
+
+  </div>
+</aside>
+{% endfor %}
+{% endblock %}

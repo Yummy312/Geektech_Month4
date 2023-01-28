@@ -1,34 +1,15 @@
 {% extends 'layouts/index.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static  'style.css' %}">
+{% endblock %}
 {% block content %}
-    <style type="text/css">
-    .product, comment{
-    display: flex;
-    position: relative;
-    transition: box-shadow .2s;
-    border-radius: 8px;
-    padding: 20px 10px 23px;
-    min-width: 120px;
-    flex-direction: column;
-    background-color: #EEEDF0;
-    box-sizing: border-box;
-    }
-    .dates{
-    display: flex;
-    justify-content: space-between;
-    }
-    .comments{
-    margin-top: 20px;
-    }
-    .comment{
-    background: #242b2e;
-    color: #fff;
-    padding: 5px;
-    width: 40%;
-    height:10%;
-    }
-    </style>
-    <div class="product" style="width: 14rem;">
-      <img src="{{product.image.url}}" class="card-img-top" alt="...">
+    <div class="product" style="width: 40%;">
+      {% if product.image %}
+        <img src="{{product.image.url}}" >
+      {% else %}
+        <img src="https://www.weddingsbylomastravel.com/images/paquetes/default.jpg" >
+      {% endif %}
       <div class="card-body">
         <p class="card-title"> <strong>Название</strong>: {{product.title}}</p>
         <p class="card-text"><strong>Описание</strong>: {{product.description}}</p>
@@ -37,6 +18,13 @@
     </div>
     <div class="dates">
         <p class="card-text"><small class="text-muted">Дата: {{product.created_date}}</small></p>
+    </div>
+    <div class="Create_Review">
+        <form action="/products/{{ product.id }}/" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Create_Review">
+        </form>
     </div>
     <div class = 'comments'>
         <h4>Отзывы</h4>
