@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Category(models.Model):
@@ -29,6 +30,7 @@ class Product(models.Model):
 
 
 class Review(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
     text = models.TextField(verbose_name='Оставьте отзыв')
     created_date = models.DateField(auto_now_add=True, verbose_name='Дата создания')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)

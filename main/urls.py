@@ -23,8 +23,9 @@ from main.settings import STATIC_URL, STATICFILES_DIRS
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('store.urls')),
-]
+    path('', include('user.urls'))
 
+]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.DEBUG:
     urlpatterns+=static(STATIC_URL, document_root=STATICFILES_DIRS)

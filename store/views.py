@@ -28,8 +28,10 @@ def products_view(request):
     if request.method == 'GET':
         products = Product.objects.all()
         context = {
-            'products':products
+            'products':products,
+            'user': request.user
         }
+        print(request.user)
         return render(request, 'products/products.html', context=context)
 
 
@@ -50,6 +52,7 @@ def product_detail_view(request, product_id):
         form = ReviewCreateForm(data=request.POST)
         if form.is_valid():
             Review.objects.create(
+                author_id=request.user.id,
                 text=form.cleaned_data.get('text'),
                 product=product
             )
@@ -58,7 +61,8 @@ def product_detail_view(request, product_id):
         return render(request, 'products/detail.html', context={
             'product': product,
             'reviews': reviews,
-            'form': form
+            'form': form,
+            'user': request.user
         })
 
 
@@ -81,12 +85,15 @@ def detail_categories(request, category_id):
         return render(request, 'categories/category_detail.html', context=context)
 
 
-def create_form_products(request):
-    if request.method == "GET":
+def create_products_view(request):
+    if request.method == "GET" and not request.user.is_anonymous: # Проверка на пользователя
         context = {
             'form': ProductCreateForm
         }
         return render(request, 'products/create.html', context=context)
+    elif request.user.is_anonymous:
+        return redirect('/products/')
+
     if request.method == 'POST' or 'post':
         form = ProductCreateForm(data=request.POST)
         if form.is_valid():
@@ -99,17 +106,6 @@ def create_form_products(request):
 
         """Если данные не прошли валидацию"""
         return render(request, 'products/create.html', context={'form': form})
-
-
-
-
-
-
-
-
-
-
-
 
 
 """ Кастомная валидация """

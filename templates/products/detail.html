@@ -3,6 +3,7 @@
 {% block head %}
     <link rel="stylesheet" href="{% static  'style.css' %}">
 {% endblock %}
+
 {% block content %}
     <div class="product" style="width: 40%;">
       {% if product.image %}
@@ -19,6 +20,7 @@
     <div class="dates">
         <p class="card-text"><small class="text-muted">Дата: {{product.created_date}}</small></p>
     </div>
+    {% if not user.is_anonymous %}
     <div class="Create_Review">
         <form action="/products/{{ product.id }}/" method="post">
             {% csrf_token %}
@@ -27,10 +29,12 @@
         </form>
     </div>
     <div class = 'comments'>
+    {% endif %}
         <h4>Отзывы</h4>
 
         {% for review in reviews %}
             <div class = 'comment'>
+                <p>{{ review.author }}</p>
                 <p>{{ review.text }}</p>
                 <p>{{ review.created_date }}</p>
             </div>
