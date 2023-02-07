@@ -2,6 +2,7 @@ from django.shortcuts import HttpResponse, render, redirect
 import datetime
 from store.models import Product, Review, Category
 from store.forms import ProductCreateForm, ReviewCreateForm
+from store.extra import Pagination
 
 
 def greet(request):
@@ -27,9 +28,21 @@ def main_view(request):
 def products_view(request):
     if request.method == 'GET':
         products = Product.objects.all()
+        products = Pagination(limit=2, object_paginate=products, page=int(request.GET.get('page', 1)))
+
+        """Логика фильтрации"""
+        search = request.GET.get('search')  # Достаем параметр в запросе
+
+        if search is not None:
+            products = Product.objects.filter(title__icontains=search) or Product.objects.filter(
+                description__icontains=search)  # Поиск объектов
+
+        max_page = products.max_page()
+
         context = {
-            'products':products,
-            'user': request.user
+            'products': products.do_paginate(),
+            'user': request.user,
+            'max_page': range(1, int(max_page) + 1),
         }
         print(request.user)
         return render(request, 'products/products.html', context=context)
@@ -72,7 +85,7 @@ def show_categories(request):
         context = {
             'categories': categories
         }
-        return render(request,'categories/index.html', context=context)
+        return render(request, 'categories/index.html', context=context)
 
 
 def detail_categories(request, category_id):
@@ -86,7 +99,7 @@ def detail_categories(request, category_id):
 
 
 def create_products_view(request):
-    if request.method == "GET" and not request.user.is_anonymous: # Проверка на пользователя
+    if request.method == "GET" and not request.user.is_anonymous:  # Проверка на пользователя
         context = {
             'form': ProductCreateForm
         }
@@ -99,7 +112,7 @@ def create_products_view(request):
         if form.is_valid():
             Product.objects.create(
                 title=form.cleaned_data.get('title'),
-                description = form.cleaned_data.get('description'),
+                description=form.cleaned_data.get('description'),
                 price=form.cleaned_data['price'] if form.cleaned_data['price'] is not None else 10
             )
             return redirect('/products/')
@@ -127,6 +140,4 @@ def create_products_view(request):
 #             )
 #             return redirect('/products/')
 #         return render(request, 'products/create.html', context={'errors': errors})
-
-
 
